@@ -160,10 +160,12 @@ The last part of the stream prior to sending data to external systems is to crea
     * stocks-goog
     * stocks-default
 
-    Look at the filter function code in your GitHub project.  This code provides an example of how you can publish messages to multiple topics from one function.  It works by looking at the stock symbol field of the incoming message and filters based on the value.  It will pass all messages that match AAPL to the "stocks-aapl" topic and all messages that match "GOOG" to the "stocks-goog" topic.  All other messages will be dropped and the function returns void.
+    Look at the filter function code in your GitHub project.  This code provides an example of how you can publish messages to multiple topics from one function.  It works by looking at the stock symbol field of the incoming message and filters based on the value.  It will pass all messages that match AAPL to the "stocks-aapl" topic and all messages that match "GOOG" to the "stocks-goog" topic.  All messages will be published to the `stocks-default` topic.
 
-2. Deploy the function to Astra Streaming using the CDC data topic as the input and `stocks-default` as the destionation topic.
-3. Create a consumer for each of the output topics, and then copy your data file to your temp directory to verify everything works.
+2. Edit `FilterStockByTicker.java` changing the tenant name to your tenant.
+3. Compile the class with `./mvnw clean package`
+4. Deploy the function to Astra Streaming using the CDC data topic as the input and `stocks-default` as the destionation topic.
+5. Create a consumer for each of the output topics, and then copy your data file to your temp directory to verify everything works.
 
 ### Send Data to External Targets
 #### ElasticSearch Sink
