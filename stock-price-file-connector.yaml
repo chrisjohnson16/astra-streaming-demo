@@ -1,0 +1,14 @@
+configs:
+  inputDirectory: "/tmp/stocks"
+  recurse: true
+  keepFile: false
+  fileFilter: "[^\\.].*"
+  pathFilter: NULL
+  minimumFileAge: 0
+  maximumFileAge: 9999999999
+  minimumSize: 1
+  maximumSize: 500000
+  ignoreHiddenFiles: true
+  pollingInterval: 5000
+  numWorkers: 1
+#  processedFileSuffix: ".processed"
