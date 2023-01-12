@@ -177,12 +177,13 @@ The ElasticSearch sink is a built in connector for Astra Streaming.  Once you ha
 1. With those values available, click on the Sinks tab within your Astra Streaming tenant.  Pick your `stocks` namespace, add a name for your sink, choose Elastic Search as the sink type.  Once the sink type is chosen, the configuation items needed will be displayed below.  Fill in those fields with the following values.
 
     * Elastic URL
-    * Use `aapl-sink` as the sink name
+    * Use the `stocks` namespace
+    * Use the `stocks-aapl` topic as the input
     * Use the username/password from the credentials file
         * You can skip the token and API key fields
     * Disable `Ignore Record Key`
     * Disable `Strip Nulls`
-    * Enable `Enable Schemas`
+    * Disable `Enable Schemas`
     * Enable `Copy Key Fields`
 
     For all other values, you can leave them set to the defaults and click the `Create` button.  Click the sink name on the following page and you can see the configuration and logs for the sink as it's being created.
@@ -190,6 +191,8 @@ The ElasticSearch sink is a built in connector for Astra Streaming.  Once you ha
 2. Once the sink is running, copy the stocks data file to `/tmp/stocks`.  If you still have your function and command line consumers running you should see messages flow through the various topics.
 
 3. Now that the data has been moved, go to the home page in your Kibana deployment, and click on `Enterprise Search`.  On the next page, click `Indices` and you should see an index called `appl-index`.  Click it and then the `Documents` tab, and you'll see records that were sent through the AAPL topic by the filter function created in the previous step.
+
+You can follow the same steps to create a sink for the `stocks-goog` topic if you want to try out creating multiple sinks.
 
 #### Snowflake Sink
 
