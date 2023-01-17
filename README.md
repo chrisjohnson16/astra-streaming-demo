@@ -204,7 +204,7 @@ Snowflake is a very common destination for change data.  The blog post by Andrey
 
     <b>Editable Sink-Specific Fields</b>
     ```
-    topic: "persistent://<YOUR TENANT>/stocks/stocks-filtered"
+    topic: "persistent://<YOUR TENANT>/stocks/stocks-default"
     offsetStorageTopic: "<YOUR TENANT>/astracdc/snowflake-cdc-offset"
     batchSize: "1"
     lingerTimeMs: "10"
@@ -234,7 +234,7 @@ Snowflake is a very common destination for change data.  The blog post by Andrey
     pulsar-admin sinks create -t snowflake --name snowflake-sink --sink-config-file <YOUR GITHUB DIR>/snowflake-sink.yaml --tenant <YOUR TENANT> -i persistent://<YOUR TENANT>/astracdc/<YOUR DATA TOPIC>
     ```
 
-3. Before you execute the stream, log out of Snowflake, and then log back in using username and password created while setting up Snowflake.
+3. Before you execute the stream, log out of Snowflake, and then log back in using Pulsar username and password created while setting up Snowflake.
 
 4. Click on `Databases` on the left side, then open `PULSAR_SCHEMA` and then `TABLES`.  You shouldn't see any tables at this point.
 
