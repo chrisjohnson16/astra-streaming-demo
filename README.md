@@ -2,9 +2,9 @@
 
 This workshop will provide good exposure to the tools and processes needed to create a complete data stream from source to target.  We will use the Pulsar CLI, locally run sources, Astra based topics, functions, and sinks, and finally ElasticSearch and Snowflake.
 
-The stream we will create is a simulation of a stock trade stream.  The process we will follow for this workshop is as follows:
+The stream you will create is a simulation of a stock trade stream.  The process you will follow for this workshop is as follows:
     
-* Our incoming data will come from a file that will we will consume with a Pulsar source running locally on our laptop.  This will provide experience in using the Pulsar CLI to interact with Astra.  
+* Incoming data will come from a file that will be consumed with a Pulsar source running locally on your laptop.  This will provide experience in using the Pulsar CLI to interact with Astra.  
 * We will deploy a function that will enrich the messages, and publish them to an Astra DB sink.
 * CDC will detect changes in the table the sink writes to and publish them to a data topic
 * We will deploy a function that filters messages and publishes them to multiple topics
@@ -20,9 +20,9 @@ To execute this workshop, ensure that you have the following:
     * Follow Step 1 on [this blog post](https://medium.com/building-the-open-data-stack/datastax-presents-snowflake-sink-connector-for-apache-pulsar-53629b196064)
 
 ### ElasticSearch Sink
-If you do not have an ElastSearch account, create a free trial account.  Once done, create a deployment in the europe-west1 GCP region.  <b>Be sure to save the credentials that are provided</b>.  You'll need them later.
+If you do not have an ElastSearch account, create a free trial account.  Once done, create a deployment in the uscentral1 GCP region.  <b>Be sure to save the credentials that are provided</b>.  You'll need them later.
 
-Once your deployment is ready, click on your deployment in the menu on the left.  This page will provide you with a number of items you'll need in later steps.
+Once it is ready, click on your deployment in the menu on the left.  This page will provide you with a number of items you'll need in later steps.
 * ElasticSearch url
 * Kibana url
 
@@ -34,10 +34,10 @@ In this section, we will walk through setup of the tools needed to execute this 
 
 ### Pulsar Tenant and Namespace
 1. Use the Astra Streaming UI to create the following:
-    * A streaming tenant in the europe-west1 GCP region
+    * A streaming tenant in the uscentral1 GCP region
         * Pick an easy name.  You'll need to reference it in later steps.
     * A namespace in your tenant named `stocks`
-    * A partitioned topic in the `stocks` namespace named `stocks-in`.  Leave persistent unchecked.
+    * An unpartitioned topic in the `stocks` namespace named `stocks-in`.  Leave persistent unchecked.
     * Add a `String` schema to your `stocks-in` topic
 
 2. Once these are created, download a configuration file that will let you use the admin and client CLIs in later steps.  Click on your stream on the left and then the `Connect` tab, and download the `client.conf` file.  
@@ -55,11 +55,11 @@ The various Pulsar CLIs are installed as part of the Pulsar distribution and can
 
 As part of our setup, you created the first topic in our stream, `stocks-in`.  
 
-1. Before you do anything else, test this topic using the pulsar-client CLI.  If you aren't there, navigate to the $PULSAR_HOME/bin directory in your laptop console.  You can test your connectivity with this command:
+1. Before you do anything else, test this topic using the pulsar-client CLI.  If you aren't there, navigate to the `<YOUR PULSAR DIR>/bin` directory in your laptop console.  You can test your connectivity with this command:
 
     `./pulsar-admin namespaces list <YOUR TENANT>`
 
-2. Next, create a consumer using the following command.  The `-s` option specifies your subscription name and the `-n 0` option tells the client to consume messages continuously:
+2. Next, create a consumer using the following command.  The `-s` option specifies your subscription name and the `-n 0` option tells the client to consume messages continuously.
     
     `./pulsar-client consume -s test -n 0 <YOUR TENANT>/stocks/stocks-in`
 
@@ -71,16 +71,18 @@ You should see the message content `key:[null], properties:[], content:hello` as
     
 ### File Source
 
-1. Now that you have a topic that we can publish to, create a Pulsar file source connector running locally on your laptop and let it process an input file. You will specify a folder that the connector will use loo for files.  Create a directory `/tmp/stocks`.
+Now that you have a topic that you can publish to, create a Pulsar file source connector running locally on your laptop and let it process an input file. You will specify a folder that the connector will use loo for files.  
+
+1. Create a directory `/tmp/stocks`.
 
 2. Download the [file connector](https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=pulsar/pulsar-2.10.3/connectors/pulsar-io-file-2.10.3.nar) from the Apache Pulsar site.  Place this file in `<YOUR PULSAR DIR>/connectors`.
 
 3. To create the function, you'll need to specify the following found in your `client.conf` file:
     * Token from the `client.conf` file downloaded from Astra.  
     * Broker service URL from the `client.conf` file downloaded from Astra.  
-    * The file source configuration found in the project folder.
+    * The file source configuration found in the GitHub project folder.
 
-4. Execute the following command to run the file connector locally
+4. Execute the following command to run the file connector locally.  The directory locations need to be the fully qualified directory and not the relative path.
 ```
 pulsar-admin sources localrun --broker-service-url <BROKER SERVICE URL> \
     --client-auth-plugin org.apache.pulsar.client.impl.auth.AuthenticationToken \
@@ -102,7 +104,8 @@ Next we will add a function to the stream.  This function will consume messages 
 1. Create a topic called `stocks-enriched` in your stocks namespace using the `pulsar-admin` CLI or the Astra Streaming UI.
 
 2. compile the code with the command `./mvnw clean install` from your GitHub project directory.
-3. Create a function in Astra Streaming using the the `Functions` tab of your streaming tenant in the UI.  You can find the jar file in `<YOUR GITHUB PROJECT>/target`.  The function should consume the `stocks-in` topic and publish to the `stocks-enriched` topic.  Leave the advance configuration items set to the defaults.  You can watch the startup of your function by clicking the name and scrolling to the bottom where the logs are displayed.
+
+3. Create a function in Astra Streaming using the the `Functions` tab of your streaming tenant in the UI.  You can find the jar file in `<YOUR GITHUB PROJECT>/target`.  The function should consume the `stocks-in` topic and publish to the `stocks-enriched` topic.  Leave the advanced configuration items set to the defaults.  You can watch the startup of your function by clicking the name and scrolling to the bottom where the logs are displayed.
 
 4. Create a consumer with the `pulsar-client` CLI consuming the `stocks-enriched` topic.
 
@@ -114,7 +117,7 @@ You should see messages consumed by the Pulsar client we just created.  They sho
 
 The messages that are created by consuming the stock file and enriched by the first function will be inserted into a table in Astra DB. 
 
-1. In the Astra DB UI, create a database called as-demo in the europe-west1 GCP region with a keyspace named demo.  **Be sure to download your token details.** You'll need them to create the Astra DB sink.
+1. In the Astra DB UI, create a database called as-demo in the uscentral1 GCP region with a keyspace named demo.  **Be sure to download your token details.** You'll need them to create the Astra DB sink.
 
 2. Once the database is created, create the following table:
     ```
@@ -134,16 +137,16 @@ The messages that are created by consuming the stock file and enriched by the fi
 3. To create an Astra DB sink, go to the your Astra Streaming tenant and click on the Sinks tab. Once there click Create and fill in the form with the information based on what we've done to this point. You'll consume the `stocks-enriched` topic and you'll need to use the following mapping. Do not use the default mapping if the field is populated:
 
     ```
-    uid=value.uuid,symbol=value.symbol,trade_date=value.date,open_price=value.openPrice,high_price=value.highPrice,low_price=value.lowPrice,close_price=value.closePrice,volume=value.volume
+uid=value.uuid,symbol=value.symbol,trade_date=value.date,open_price=value.openPrice,high_price=value.highPrice,low_price=value.lowPrice,close_price=value.closePrice,volume=value.volume
     ```
 
     For the token, you'll use the token value found in the credentials file you just downloaded when creating your Astra DB instance. Use the defaults for everything else.
 
-4. Copy the <YOUR GITHUB PROJECT DIR>/stock-prices-10.csv file to /tmp/stocks directory. You should see 10 records inserted into the table once it completes.
+4. Copy the `<YOUR GITHUB PROJECT DIR>/stock-prices-10.csv` file to the `/tmp/stocks` directory. You should see 10 records inserted into the table once it completes.
 
 ### Change Data Capture 
 
-Now that we have a table, let's enable CDC on it and look at what gets created.
+Now that we have a table, let's enable CDC and look at what gets created.
 
 1. Click on the CDC tab in your Astra DB instance.  Click the `Enable CDC` button at the top right and then pick your tenant, keyspace, and enter the table name.  The table should be enabled quickly.  
 
