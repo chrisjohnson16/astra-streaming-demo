@@ -37,7 +37,7 @@ In this section, we will walk through setup of the tools needed to execute this 
     * A streaming tenant in the uscentral1 GCP region
         * Pick an easy name.  You'll need to reference it in later steps.
     * A namespace in your tenant named `stocks`
-    * An unpartitioned topic in the `stocks` namespace named `stocks-in`.  Leave persistent unchecked.
+    * An unpartitioned topic in the `stocks` namespace named `stocks-in`.  The topic should be persistent.
     * Add a `String` schema to your `stocks-in` topic
 
 2. Once these are created, download a configuration file that will let you use the admin and client CLIs in later steps.  Click on your stream on the left and then the `Connect` tab, and download the `client.conf` file.  
@@ -159,7 +159,7 @@ The last part of the stream prior to sending data to external systems is to crea
 
 1. Create three topics from the command line using the "pulsar-admin".  Give this a try using the CLI if you want to get experience creating things from that point of view.
 
-    * stocks-appl
+    * stocks-aapl
     * stocks-goog
     * stocks-default
 
