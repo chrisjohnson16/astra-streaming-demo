@@ -10,10 +10,10 @@
   <name>function-demo</name>
 
   <properties>
-	<slf4j.version>1.7.25</slf4j.version>  
-    <pulsar.version>2.10.1</pulsar.version>
-	<maven.compiler.source>1.8</maven.compiler.source>   
-	<maven.compiler.target>1.8</maven.compiler.target> 
+	  <slf4j.version>1.7.25</slf4j.version>  
+    <pulsar.version>3.2.3</pulsar.version>
+	  <maven.compiler.source>1.8</maven.compiler.source>   
+	  <maven.compiler.target>1.8</maven.compiler.target> 
   </properties>
 
   <dependencies>
